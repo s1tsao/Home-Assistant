@@ -104,7 +104,31 @@ export default App;
 import React from 'react';
 import { Table, Button } from 'reactstrap';
 
+class Device_Row extends React.Component{
+  
+  render() {
+    return (
+      <tr>
+        <th scope="row">{this.props.row_num}</th>
+        <td>{this.props.name}</td>
+        <td><Button color="success">{this.props.operation}</Button>{' '}</td>
+        <td><Button color="secondary">Configure</Button>{' '}</td>
+      </tr>
+    )
+  }
+}
+
 export default class Example extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      rows: 0,
+    };
+  }
+  renderRow(name, operation){
+    this.state.rows += 1;
+    return <Device_Row row_num={this.state.rows} name={name} operation={operation}/>;
+  }
   render() {
     return (
       <Table hover responsive>
@@ -117,24 +141,9 @@ export default class Example extends React.Component {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td>Computer</td>
-            <td>Startup</td>
-            <td><Button color="secondary">Configure</Button>{' '}</td>
-          </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>@fat</td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td>Larry</td>
-            <td>the Bird</td>
-            <td>@twitter</td>
-          </tr>
+          {this.renderRow("computer", "startup")}
+          {this.renderRow("phone", "alert")}
+          {this.renderRow("speaker", "toggle_mute")}
         </tbody>
       </Table>
     );
