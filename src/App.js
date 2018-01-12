@@ -101,8 +101,12 @@ class App extends Component {
 export default App;
 */
 
-import React from 'react';
+/*import React from 'react';
 import { Table, Button } from 'reactstrap';
+
+var app = require('express')();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 
 class Device_Row extends React.Component{
   
@@ -123,14 +127,20 @@ export default class Example extends React.Component {
     super(props);
     this.state = {
       rows: 0,
+      Device_IP: {},
     };
+    this.state.socket = io();
   }
   renderRow(name, operation){
     this.state.rows += 1;
     return <Device_Row row_num={this.state.rows} name={name} operation={operation}/>;
   }
+  configure_device(){
+    
+  }
   render() {
     return (
+      <div class="container">
       <Table hover responsive>
         <thead>
           <tr>
@@ -146,6 +156,41 @@ export default class Example extends React.Component {
           {this.renderRow("speaker", "toggle_mute")}
         </tbody>
       </Table>
+      <ul id="messages"></ul>
+      <form action="">
+        <input id="m" autocomplete="off" /><button>Send</button>
+      </form>
+      </div>
+    );
+  }
+}
+
+*/
+import React from 'react';
+import openSocket from 'socket.io-client';
+const  socket = openSocket('http://localhost:8000');
+function subscribeToTimer(cb) {
+  socket.on('timer', timestamp => cb(null, timestamp));
+  socket.emit('subscribeToTimer', 1000);
+};
+
+export default class Example extends React.Component {
+  constructor(props) {
+    super(props);
+    subscribeToTimer((err, timestamp) => this.setState({ 
+      timestamp 
+    }));
+    this.state = {
+      timestamp: 'no timestamp yet'
+    };
+  }
+  render() {
+    return (
+      <div className="App">
+        <p className="App-intro">
+        This is the timer value: {this.state.timestamp}
+        </p>
+      </div>
     );
   }
 }

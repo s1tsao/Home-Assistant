@@ -1,1 +1,2 @@
 setup: http://reactstrap.github.io/
+install: concurrent, express, socket.io
