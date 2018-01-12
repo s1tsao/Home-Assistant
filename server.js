@@ -14,7 +14,7 @@ http.listen(3000, function(){
   console.log('listening on *:3000');
 });
 */
-
+var wol = require('node-wol');
 const io = require('socket.io')();
 
 io.on('connection', (client) => {
@@ -24,6 +24,23 @@ io.on('connection', (client) => {
       client.emit('timer', new Date());
     }, interval);
   });
+  client.on('wol', function(){
+    
+ 
+    //wol.wake('ac:37:43:dc:20:f1');
+    
+    wol.wake('ac:37:43:dc:20:f1', function(error) {
+      if(error) {
+        // handle error 
+        console.log("waking up device");
+        return;
+      }
+    });
+    console.log("waking");
+    
+    //var magicPacket = wol.createMagicPacket('20:DE:20:DE:20:DE');
+
+  })
 });
 
 const port = 8000;

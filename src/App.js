@@ -167,8 +167,24 @@ export default class Example extends React.Component {
 
 */
 import React from 'react';
+import { Table, Button } from 'reactstrap';
 import openSocket from 'socket.io-client';
 const  socket = openSocket('http://localhost:8000');
+
+class Device_Row extends React.Component{
+  
+  render() {
+    return (
+      <tr>
+        <th scope="row">{this.props.row_num}</th>
+        <td>{this.props.name}</td>
+        <td><Button color="success" onClick={this.props.onclick_op}>{this.props.operation} </Button>{' '}</td>
+        <td><Button color="secondary">Configure</Button>{' '}</td>
+      </tr>
+    )
+  }
+}
+
 function subscribeToTimer(cb) {
   socket.on('timer', timestamp => cb(null, timestamp));
   socket.emit('subscribeToTimer', 1000);
@@ -181,8 +197,20 @@ export default class Example extends React.Component {
       timestamp 
     }));
     this.state = {
-      timestamp: 'no timestamp yet'
+      rows: 0,
+      Device_IP: {},
+      timestamp: 'no timestamp yet',
+      text: ""
     };
+  }
+
+  renderRow(name, operation, op){
+    this.state.rows += 1;
+    return <Device_Row row_num={this.state.rows} name={name} operation={operation} onclick_op={op}/>;
+  }
+  op(){
+    console.log("button clicked");
+    socket.emit('wol');
   }
   render() {
     return (
@@ -190,6 +218,30 @@ export default class Example extends React.Component {
         <p className="App-intro">
         This is the timer value: {this.state.timestamp}
         </p>
+        <p className="info">
+        Text: {this.state.text}
+        </p>
+        <div className="container">
+        <Table hover responsive>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Device</th>
+              <th>Operation</th>
+              <th>configure</th>
+            </tr>
+          </thead>
+          <tbody>
+            {this.renderRow("computer", "startup", this.op)}
+            {this.renderRow("phone", "alert", this.op)}
+            {this.renderRow("speaker", "toggle_mute", this.op)}
+          </tbody>
+        </Table>
+        <ul id="messages"></ul>
+        <form action="">
+          <input id="m" autoComplete="off" /><button>Send</button>
+        </form>
+        </div>
       </div>
     );
   }
