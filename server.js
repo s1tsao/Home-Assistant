@@ -16,7 +16,7 @@ http.listen(3000, function(){
 */
 var wol = require('node-wol');
 const io = require('socket.io')();
-
+device_map = {"computer":'ac:37:43:dc:20:f1',"phone":'ac:37:43:dc:20:f1'};
 io.on('connection', (client) => {
   client.on('subscribeToTimer', (interval) => {
     console.log('client is subscribing to timer with interval ', interval);
@@ -24,23 +24,28 @@ io.on('connection', (client) => {
       client.emit('timer', new Date());
     }, interval);
   });
-  client.on('wol', function(){
-    
- 
+  client.on('wol', function(device){
     //wol.wake('ac:37:43:dc:20:f1');
-    
-    wol.wake('ac:37:43:dc:20:f1', function(error) {
+    if(!(device in device_map)){
+      console.log("device:"+device+" not configured");
+    }
+    else{
+      wol.wake(device_map[device], function(error) {
       if(error) {
         // handle error 
-        console.log("waking up device");
+        console.log("error waking up device");
         return;
       }
-    });
-    console.log("waking");
-    
-    //var magicPacket = wol.createMagicPacket('20:DE:20:DE:20:DE');
+      });
+      console.log("waking:"+device+":"+device_map[device]);
+      //var magicPacket = wol.createMagicPacket('20:DE:20:DE:20:DE');
+    }
 
   })
+  client.on('config', function(device, mac_address){
+    device_map[device]=mac_address;
+    console.log("device:"+mac_address);
+  });
 });
 
 const port = 8000;

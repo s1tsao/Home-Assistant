@@ -169,17 +169,22 @@ export default class Example extends React.Component {
 import React from 'react';
 import { Table, Button } from 'reactstrap';
 import openSocket from 'socket.io-client';
+
 const  socket = openSocket('http://localhost:8000');
 
 class Device_Row extends React.Component{
-  
+  config(device){
+    //var addr = require('macaddress').one();
+    //socket.emit('config', device, addr);
+    
+  }
   render() {
     return (
       <tr>
         <th scope="row">{this.props.row_num}</th>
         <td>{this.props.name}</td>
-        <td><Button color="success" onClick={this.props.onclick_op}>{this.props.operation} </Button>{' '}</td>
-        <td><Button color="secondary">Configure</Button>{' '}</td>
+        <td><Button color="success" onClick={() => this.props.onclick_op(this.props.name)}>{this.props.operation} </Button>{' '}</td>
+        <td><Button color="secondary" onClick={() => this.config(this.props.name)}>Configure</Button>{' '}</td>
       </tr>
     )
   }
@@ -208,10 +213,11 @@ export default class Example extends React.Component {
     this.state.rows += 1;
     return <Device_Row row_num={this.state.rows} name={name} operation={operation} onclick_op={op}/>;
   }
-  op(){
+  op_wol(device){
     console.log("button clicked");
-    socket.emit('wol');
+    socket.emit('wol', device);
   }
+ 
   render() {
     return (
       <div className="App">
@@ -232,9 +238,9 @@ export default class Example extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {this.renderRow("computer", "startup", this.op)}
-            {this.renderRow("phone", "alert", this.op)}
-            {this.renderRow("speaker", "toggle_mute", this.op)}
+            {this.renderRow("computer", "startup", this.op_wol)}
+            {this.renderRow("phone", "alert", this.op_wol)}
+            {this.renderRow("speaker", "toggle_mute", this.op_wol)}
           </tbody>
         </Table>
         <ul id="messages"></ul>
