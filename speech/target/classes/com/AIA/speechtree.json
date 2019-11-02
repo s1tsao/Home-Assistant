@@ -1,5 +1,21 @@
 {
-  "hello,hi": ["hi uwu",{
-    "bye": ["bye ._."]
-  }]
+  "pseudotraining": {
+    "0": [
+      "hello",
+      "hi"
+    ],
+    "1": [
+      "bye"
+    ]
+  },
+  "dialogue": {
+    "0": [
+      "hi uwu",
+      {
+        "1": [
+          "bye ._."
+        ]
+      }
+    ]
+  }
 }
